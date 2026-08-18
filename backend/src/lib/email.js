@@ -1,28 +1,48 @@
 import nodemailer from "nodemailer";
+import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
 
-// Create transporter using SMTP settings from environment variables
-// Falls back to logging if variables are missing
+// Create transporter using AWS SES SDK or fallback to SMTP settings
 export const getTransporter = () => {
-  const host = "smtp.gmail.com";
-  const port = 587;
-  const user = "harshsoaring@gmail.com";
-  const pass = "towi guhv yhxh wewm";
+  const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+  const region = process.env.AWS_REGION || "us-east-1";
+
+  // Fallback to SMTP/Gmail if AWS credentials are not configured yet
+  if (!accessKeyId || !secretAccessKey) {
+    console.warn("⚠️ AWS SES credentials are not fully configured. Falling back to Gmail SMTP.");
+    const host = "smtp.gmail.com";
+    const port = 587;
+    const user = "harshsoaring@gmail.com";
+    const pass = "towi guhv yhxh wewm";
+
+    return nodemailer.createTransport({
+      host: host,
+      port: port,
+      secure: false,
+      auth: {
+        user: user,
+        pass: pass,
+      },
+    });
+  }
+
+  const sesClient = new SESv2Client({
+    region,
+    credentials: {
+      accessKeyId,
+      secretAccessKey,
+    },
+  });
 
   return nodemailer.createTransport({
-    host: host,
-    port: port,
-    secure: false,
-    auth: {
-      user: user,
-      pass: pass,
-    },
+    SES: { sesClient, SendEmailCommand },
   });
 };
 
 export async function sendSubmissionEmail(submission) {
   const { type, name, phone, email, subject, program, message } = submission;
 
-  const targetEmail = "info@soaringaerotech.com, harshsoaring@gmail.com";
+  const targetEmail = "info@soaringaerotech.com";
   const transporter = getTransporter();
 
   // Create clean email Subject
@@ -98,8 +118,9 @@ export async function sendSubmissionEmail(submission) {
     </div>
   `;
 
+  const senderEmail = process.env.SES_SENDER_EMAIL || "harshsoaring@gmail.com";
   const mailOptions = {
-    from: `"Soaring Aerotech Web" <harshsoaring@gmail.com>`,
+    from: `"Soaring Aerotech Web" <${senderEmail}>`,
     to: targetEmail,
     subject: mailSubject,
     html: detailsHtml,

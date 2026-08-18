@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ScrollToTop } from "@/components/layout/ScrollToTop";
+import Chatbot from "@/components/Chatbot";
 
 // Pages
 import Home from "@/pages/Home";
@@ -47,6 +48,7 @@ function Router() {
           <Route component={NotFound} />
         </Switch>
       </div>
+      {!isAdminOrLogin && <Chatbot />}
       {!isAdminOrLogin && <Footer />}
     </div>
   );

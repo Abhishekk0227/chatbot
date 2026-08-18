@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Aerial Survey and Mapping Services",
+    "content": "Soaring Aerotech provides B2B aerial survey and mapping with centimeter-level accuracy (±2cm). We deliver high-precision 3D terrain models, orthomosaics, and GIS outputs for highways, land records, and mining projects."
+  },
+  {
+    "title": "Solar Plant Thermal Inspections",
+    "content": "Professional solar farm thermographic inspections. Using advanced thermal sensors, we identify hotspot anomalies and bypass diode failures (450+ faults detected) with zero grid downtime."
+  },
+  {
+    "title": "Precision Agriculture and Crop Spraying",
+    "content": "Precision agricultural spraying using heavy multirotors. We provide multispectral crop health analysis (NDVI mapping) and targeted pesticide/fertilizer spraying, saving time and resources."
+  },
+  {
+    "title": "Infrastructure and Power Substation Inspection",
+    "content": "UAV inspection for power grids, wind turbines, chimneys, and bridges. Operations are carried out with zero shutdown required, identifying structural defects 5x faster than manual inspections."
+  },
+  {
+    "title": "Custom UAV Hardware and AI Solutions",
+    "content": "Custom drone manufacturing and AI solutions. We develop purpose-built hardware payloads, custom flight controllers, and computer vision AI models for autonomous surveillance and security patrols."
+  }
+]

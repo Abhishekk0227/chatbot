@@ -100,8 +100,8 @@ export default function Contact() {
                     <div>
                       <h4 className="font-bold text-xs sm:text-base text-foreground mb-0.5 sm:mb-1">Phone</h4>
                       <p className="text-muted-foreground text-[11px] sm:text-sm flex flex-col gap-0.5 sm:gap-1">
-                        <a href="tel:+917869955418" className="hover:text-primary transition-colors">+91 78699 55418</a>
                         <a href="tel:+917869918736" className="hover:text-primary transition-colors">+91 78699 18736</a>
+                        <a href="tel:+917869955418" className="hover:text-primary transition-colors">+91 78699 55418</a>
                       </p>
                     </div>
                   </div>
@@ -212,14 +212,14 @@ export default function Contact() {
               <h3 className="font-display text-2xl text-white">We respond within <span className="text-primary">24 hours</span></h3>
             </div>
             <div className="flex flex-wrap gap-4">
-              <a href="tel:+917869955418">
-                <Button variant="outline" className="rounded-full px-5 h-12 text-sm font-semibold border-white/20 text-white hover:bg-white/10">
-                  <Phone className="w-4 h-4 mr-2" /> +91 78699 55418
-                </Button>
-              </a>
               <a href="tel:+917869918736">
                 <Button variant="outline" className="rounded-full px-5 h-12 text-sm font-semibold border-white/20 text-white hover:bg-white/10">
                   <Phone className="w-4 h-4 mr-2" /> +91 78699 18736
+                </Button>
+              </a>
+              <a href="tel:+917869955418">
+                <Button variant="outline" className="rounded-full px-5 h-12 text-sm font-semibold border-white/20 text-white hover:bg-white/10">
+                  <Phone className="w-4 h-4 mr-2" /> +91 78699 55418
                 </Button>
               </a>
               <a href="mailto:info@soaringaerotech.com">

@@ -1560,7 +1560,7 @@ export default function Home() {
               },
               {
                 icon: <Phone className="w-4 h-4 text-primary shrink-0" />,
-                text: "+91 78699 55418 / +91 78699 18736",
+                text: "+91 78699 18736 / +91 78699 55418",
               },
               {
                 icon: <ShieldCheck className="w-4 h-4 text-primary shrink-0" />,

@@ -82,9 +82,9 @@ export default function Projects() {
       </section>
 
       {/* ── Projects ─────────────────────────────── */}
-      <section className="py-10 sm:py-24 bg-[#F5F5F5]">
+      <section className="py-6 sm:py-16 md:py-24 bg-[#F5F5F5]">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="space-y-12">
+          <div className="space-y-6 sm:space-y-12">
             {projects.map((project, i) => (
               <motion.div
                 key={i}
@@ -94,38 +94,38 @@ export default function Projects() {
                 transition={{ delay: 0.05 }}
                 className="grid grid-cols-1 lg:grid-cols-2 gap-0 items-stretch bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm border border-border group hover:shadow-xl transition-shadow"
               >
-                <div className={`relative min-h-[220px] lg:min-h-[320px] overflow-hidden ${i % 2 !== 0 ? 'lg:order-2' : ''}`}>
+                <div className={`relative h-48 sm:h-64 md:h-80 lg:h-auto lg:min-h-[320px] overflow-hidden ${i % 2 !== 0 ? 'lg:order-2' : ''}`}>
                   <img src={project.img} alt={project.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/60 to-transparent" />
-                  <div className="absolute top-5 left-5">
-                    <span className="inline-flex px-4 py-1.5 rounded-full bg-white text-foreground font-mono text-xs font-bold shadow-md">
+                  <div className="absolute top-4 left-4 sm:top-5 sm:left-5">
+                    <span className="inline-flex px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-white text-foreground font-mono text-[10px] sm:text-xs font-bold shadow-md">
                       {project.category.toUpperCase()}
                     </span>
                   </div>
                   {/* Result pills on image */}
-                  <div className="absolute bottom-5 left-5 flex flex-wrap gap-2">
+                  <div className="absolute bottom-4 left-4 sm:bottom-5 sm:left-5 flex flex-wrap gap-1.5 sm:gap-2">
                     {(project.results ?? []).map((res, j) => (
-                      <div key={j} className="bg-primary/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1.5 rounded-full">
+                      <div key={j} className="bg-primary/90 backdrop-blur-sm text-white text-[10px] sm:text-xs font-bold px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full">
                         {res.label}: {res.value}
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="p-5 md:p-12 flex flex-col justify-center">
-                  <h2 className="font-display text-2xl md:text-3xl text-foreground mb-7">{project.title}</h2>
-                  <div className="space-y-5 mb-6">
+                <div className="p-4 sm:p-6 md:p-12 flex flex-col justify-center">
+                  <h2 className="font-display text-lg sm:text-2xl md:text-3xl text-foreground mb-4 sm:mb-6">{project.title}</h2>
+                  <div className="space-y-4 sm:space-y-5 mb-5 sm:mb-6">
                     <div>
-                      <div className="section-label mb-2">THE CHALLENGE</div>
-                      <p className="text-muted-foreground text-sm leading-relaxed">{project.challenge}</p>
+                      <div className="section-label mb-1.5">THE CHALLENGE</div>
+                      <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">{project.challenge}</p>
                     </div>
                     <div>
-                      <div className="section-label mb-2 mt-4">OUR SOLUTION</div>
-                      <p className="text-muted-foreground text-sm leading-relaxed">{project.solution}</p>
+                      <div className="section-label mb-1.5 mt-3 sm:mt-4">OUR SOLUTION</div>
+                      <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">{project.solution}</p>
                     </div>
                   </div>
-                  <Link href="/contact" className="inline-flex items-center gap-2 text-primary font-bold text-sm group/link">
-                    Discuss Similar Project <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
+                  <Link href="/contact" className="inline-flex items-center gap-2 text-primary font-bold text-xs sm:text-sm group/link">
+                    Discuss Similar Project <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover/link:translate-x-1 transition-transform" />
                   </Link>
                 </div>
               </motion.div>

@@ -294,14 +294,14 @@ export default function Training() {
                   Apply Now <ChevronRight className="w-4 h-4 ml-1" />
                 </Button>
                 <div className="grid grid-cols-2 gap-2 w-full sm:w-auto sm:flex sm:flex-row sm:gap-3">
-                  <a href="tel:+917869955418" className="w-full sm:w-auto">
-                    <Button size="sm" variant="outline" className="rounded-full h-12 px-4 text-xs sm:text-sm font-semibold border-border text-foreground hover:bg-slate-50 w-full flex items-center justify-center whitespace-nowrap">
-                      <Phone className="w-3.5 h-3.5 mr-2 shrink-0" /> +91 78699 55418
-                    </Button>
-                  </a>
                   <a href="tel:+917869918736" className="w-full sm:w-auto">
                     <Button size="sm" variant="outline" className="rounded-full h-12 px-4 text-xs sm:text-sm font-semibold border-border text-foreground hover:bg-slate-50 w-full flex items-center justify-center whitespace-nowrap">
                       <Phone className="w-3.5 h-3.5 mr-2 shrink-0" /> +91 78699 18736
+                    </Button>
+                  </a>
+                  <a href="tel:+917869955418" className="w-full sm:w-auto">
+                    <Button size="sm" variant="outline" className="rounded-full h-12 px-4 text-xs sm:text-sm font-semibold border-border text-foreground hover:bg-slate-50 w-full flex items-center justify-center whitespace-nowrap">
+                      <Phone className="w-3.5 h-3.5 mr-2 shrink-0" /> +91 78699 55418
                     </Button>
                   </a>
                 </div>

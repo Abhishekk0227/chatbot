@@ -4,7 +4,7 @@ const submissionSchema = new mongoose.Schema(
   {
     type: {
       type: String,
-      enum: ["contact", "enrollment", "training"],
+      enum: ["contact", "enrollment", "training", "chatbot_lead"],
       required: true,
     },
     name: { type: String, required: true },
