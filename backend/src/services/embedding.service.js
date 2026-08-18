@@ -11,6 +11,7 @@ export async function getEmbedding(text) {
     const response = await fetch(`${ollamaUrl}/api/embeddings`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      signal: AbortSignal.timeout(400),
       body: JSON.stringify({
         model: "nomic-embed-text",
         prompt: cleanText
@@ -34,6 +35,7 @@ export async function getEmbedding(text) {
       const response = await fetch(geminiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: AbortSignal.timeout(3000),
         body: JSON.stringify({
           content: { parts: [{ text: cleanText }] }
         })

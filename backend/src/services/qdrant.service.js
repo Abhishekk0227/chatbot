@@ -1,4 +1,5 @@
 import { QdrantClient } from "@qdrant/js-client-rest";
+import mongoose from "mongoose";
 import { KnowledgeChunk } from "../db/models/chunk.js";
 
 const QDRANT_URL = process.env.QDRANT_URL || "http://localhost:6333";
@@ -82,18 +83,28 @@ export async function upsertChunks(chunks) {
   }
 }
 
+// In-memory cache for MongoDB chunks fallback
+let dbChunksCache = null;
+let lastCacheTime = 0;
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
 /**
  * Search Qdrant for top relevant chunks, falling back to local database cosine similarity
  */
 export async function searchKnowledge(queryVector, limit = 5) {
-  // 1. Try Qdrant search
+  // 1. Try Qdrant search with 300ms fast timeout
   if (qdrantClient) {
     try {
-      const results = await qdrantClient.search(COLLECTION_NAME, {
+      const qdrantPromise = qdrantClient.search(COLLECTION_NAME, {
         vector: queryVector,
         limit,
         with_payload: true
       });
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Qdrant search timeout")), 300)
+      );
+
+      const results = await Promise.race([qdrantPromise, timeoutPromise]);
       if (results && results.length > 0) {
         return results.map(item => ({
           title: item.payload.title,
@@ -103,19 +114,28 @@ export async function searchKnowledge(queryVector, limit = 5) {
         }));
       }
     } catch (err) {
-      // Qdrant search failed, silent fallback
+      // Qdrant search failed or timed out, silent fast fallback
     }
   }
 
-  // 2. High-fidelity MongoDB Fallback using Cosine Similarity
-  console.log("🔍 Searching knowledge base using MongoDB fallback...");
+  // 2. High-fidelity MongoDB Fallback using Cosine Similarity with in-memory caching
   try {
-    const dbChunks = await KnowledgeChunk.find({});
-    if (!dbChunks || dbChunks.length === 0) {
+    const now = Date.now();
+    if (!dbChunksCache || now - lastCacheTime > CACHE_TTL) {
+      if (mongoose.connection.readyState !== 1) {
+        console.warn("⚠️ MongoDB is not connected. Skipping knowledge chunk DB query.");
+        return [];
+      }
+      console.log("🔍 Fetching knowledge base chunks from MongoDB for cache...");
+      dbChunksCache = await KnowledgeChunk.find({}).maxTimeMS(2000).lean();
+      lastCacheTime = now;
+    }
+
+    if (!dbChunksCache || dbChunksCache.length === 0) {
       return [];
     }
 
-    const scored = dbChunks.map(chunk => {
+    const scored = dbChunksCache.map(chunk => {
       const score = cosineSimilarity(queryVector, chunk.embedding);
       return {
         title: chunk.title,

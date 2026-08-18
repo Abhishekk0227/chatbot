@@ -27,14 +27,14 @@ const formatMessageText = (text) => {
       if (match.index > lastIndex) {
         parts.push(para.substring(lastIndex, match.index));
       }
-      
+
       const linkText = match[1];
       const linkUrl = match[2];
-      
+
       parts.push(
-        <a 
-          key={match.index} 
-          href={linkUrl} 
+        <a
+          key={match.index}
+          href={linkUrl}
           target={linkUrl.startsWith("http") ? "_blank" : "_self"}
           rel="noopener noreferrer"
           className="text-primary hover:underline font-bold inline-flex items-center gap-0.5"
@@ -43,7 +43,7 @@ const formatMessageText = (text) => {
           {linkUrl.startsWith("http") && <ArrowRight className="w-3 h-3 inline" />}
         </a>
       );
-      
+
       lastIndex = linkRegex.lastIndex;
     }
 
@@ -95,17 +95,26 @@ const SUGGESTIONS = [
 
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
   const [messages, setMessages] = useState([
     {
       id: "welcome",
       role: "assistant",
-      text: "Hello! 🙏 I am the Soaring Assistant, the AI representative of Soaring Aerotech. How can I help you today? You can ask me about our drone courses, industrial services, fees, or contact details!",
+      text: "Hello! 🙏 I am **AeroBot**, your AI Sales Copilot at Soaring Aerotech. How can I help you today? Ask me about our DGCA drone pilot courses, fees, or industrial B2B services!",
       timestamp: new Date()
     }
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
+
+  // Show avatar popup bubble after 1.5 seconds on website open
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowPopup(true);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   // wouter location hook for AI Copilot routing
   const [location, setLocation] = useLocation();
@@ -151,8 +160,8 @@ export default function Chatbot() {
               subject: "AI Chatbot Qualified Lead",
               program: leadInfo.course || "General Inquiry",
               message: `Qualified Lead from AI Chatbot. Profile Details:\n` +
-                       `- Background: ${leadInfo.background || "Not specified"}\n` +
-                       `- City: ${leadInfo.city || "Not specified"}`
+                `- Background: ${leadInfo.background || "Not specified"}\n` +
+                `- City: ${leadInfo.city || "Not specified"}`
             })
           });
           const resData = await response.json();
@@ -231,7 +240,7 @@ export default function Chatbot() {
     if (!text) return;
 
     if (!textToSend) setInput("");
-    
+
     const userMessage = {
       id: Math.random().toString(36).substr(2, 9),
       role: "user",
@@ -243,21 +252,21 @@ export default function Chatbot() {
 
     // Check direct call dialing
     const lowerText = text.toLowerCase();
-    const isCallCommand = lowerText.includes("call lagao") || 
-                          lowerText.includes("call karo") || 
-                          lowerText.includes("direct call") || 
-                          lowerText.includes("call now") ||
-                          lowerText.includes("call dialing") ||
-                          (lowerText.includes("call") && (lowerText.includes("me") || lowerText.includes("us") || lowerText.includes("now") || lowerText.includes("direct")));
-    
+    const isCallCommand = lowerText.includes("call lagao") ||
+      lowerText.includes("call karo") ||
+      lowerText.includes("direct call") ||
+      lowerText.includes("call now") ||
+      lowerText.includes("call dialing") ||
+      (lowerText.includes("call") && (lowerText.includes("me") || lowerText.includes("us") || lowerText.includes("now") || lowerText.includes("direct")));
+
     if (isCallCommand) {
       setIsLoading(true);
-      
+
       // Automatically dial
       setTimeout(() => {
         window.location.href = "tel:+917869918736";
       }, 500);
-      
+
       setTimeout(() => {
         setMessages(prev => [...prev, {
           id: Math.random().toString(36).substr(2, 9),
@@ -355,30 +364,32 @@ export default function Chatbot() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            initial={{ opacity: 0, y: 25, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 30, scale: 0.95 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-            className="w-[90vw] sm:w-[400px] h-[520px] sm:h-[600px] rounded-3xl bg-white border border-slate-200 shadow-2xl overflow-hidden flex flex-col mb-4 bg-opacity-95 backdrop-blur-md"
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+            className="w-[92vw] sm:w-[410px] h-[520px] sm:h-[610px] rounded-3xl bg-white border border-slate-200/90 shadow-2xl overflow-hidden flex flex-col mb-3 backdrop-blur-xl"
           >
             {/* Header */}
-            <div className="bg-[#111111] p-4 flex items-center justify-between border-b border-white/10 shrink-0">
+            <div className="bg-slate-950 p-3.5 sm:p-4 flex items-center justify-between border-b border-slate-800 shrink-0">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary relative">
-                  <Bot className="w-5 h-5" />
-                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-[#111111] rounded-full animate-pulse" />
+                <div className="w-9 h-9 rounded-full bg-primary/15 border border-primary/30 flex items-center justify-center text-primary relative">
+                  <Bot className="w-5 h-5 text-primary" />
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-slate-950 rounded-full" />
                 </div>
                 <div>
-                  <h4 className="text-white font-bold text-sm tracking-wide">Soaring Assistant</h4>
+                  <h4 className="text-white font-semibold text-sm tracking-tight flex items-center gap-1.5">
+                    AeroBot
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  </h4>
                   <div className="flex items-center gap-1">
-                    <span className="text-[10px] text-white/50 font-mono uppercase tracking-widest">AI Agent</span>
-                    <Sparkles className="w-2.5 h-2.5 text-primary" />
+                    {/* <span className="text-[10px] text-emerald-400 font-medium tracking-wide uppercase font-mono">Online • AI Drone Copilot</span> */}
                   </div>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => setIsOpen(false)}
-                className="w-8 h-8 rounded-full bg-white/5 text-white/70 hover:text-white hover:bg-white/10 transition-colors flex items-center justify-center"
+                className="w-8 h-8 rounded-full bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors flex items-center justify-center"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -386,33 +397,33 @@ export default function Chatbot() {
 
             {/* Profile Matching Progress Bar */}
             {leadScore > 0 && (
-              <div className="bg-[#1a1a1a] px-4 py-2 flex items-center justify-between border-b border-white/5 shrink-0 text-[10px]">
-                <div className="flex items-center gap-1.5 text-white/60">
-                  <Award className="w-3.5 h-3.5 text-yellow-400" />
-                  <span>Profile Match Progress:</span>
+              <div className="bg-slate-900 px-4 py-2 flex items-center justify-between border-b border-slate-800 shrink-0 text-[11px]">
+                <div className="flex items-center gap-1.5 text-slate-400">
+                  <Award className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Profile Match:</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-24 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                    <div 
-                      className="bg-primary h-full transition-all duration-500" 
-                      style={{ width: `${leadScore}%` }} 
+                  <div className="w-24 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                    <div
+                      className="bg-primary h-full transition-all duration-500 rounded-full"
+                      style={{ width: `${leadScore}%` }}
                     />
                   </div>
                   {leadSubmitted ? (
-                    <span className="text-green-400 font-bold flex items-center gap-0.5 font-mono"><Check className="w-3 h-3" /> Qualified</span>
+                    <span className="text-emerald-400 font-semibold flex items-center gap-0.5 font-mono"><Check className="w-3 h-3" /> Qualified</span>
                   ) : (
-                    <span className="font-bold font-mono text-white">{leadScore}%</span>
+                    <span className="font-semibold font-mono text-white">{leadScore}%</span>
                   )}
                 </div>
               </div>
             )}
 
             {/* Chat Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-slate-200 bg-slate-50/50">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-[#F8FAFC] scrollbar-thin scrollbar-thumb-slate-200">
               {messages.map((msg) => {
                 const isCallRelated = msg.role === "assistant" && (
-                  msg.text.includes("+91") || 
-                  msg.text.toLowerCase().includes("call") || 
+                  msg.text.includes("+91") ||
+                  msg.text.toLowerCase().includes("call") ||
                   msg.text.toLowerCase().includes("contact number")
                 );
 
@@ -421,36 +432,35 @@ export default function Chatbot() {
                     key={msg.id}
                     className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                   >
-                    <div className={`flex gap-2.5 max-w-[85%] ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
+                    <div className={`flex gap-2.5 max-w-[86%] ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
                       {msg.role === "assistant" && (
-                        <div className="w-7 h-7 rounded-full bg-[#111111] border border-border flex items-center justify-center shrink-0 text-primary mt-1">
-                          <Bot className="w-3.5 h-3.5" />
+                        <div className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center shrink-0 mt-1 shadow-xs">
+                          <Bot className="w-3.5 h-3.5 text-primary" />
                         </div>
                       )}
                       <div
-                        className={`p-3.5 rounded-2xl ${
-                          msg.role === "user"
-                            ? "bg-primary text-white rounded-tr-none shadow-md"
-                            : "bg-white text-slate-800 rounded-tl-none border border-slate-200/50 shadow-sm"
-                        }`}
+                        className={`p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed ${msg.role === "user"
+                            ? "bg-primary text-white rounded-tr-xs shadow-sm font-normal"
+                            : "bg-white text-slate-800 rounded-tl-xs border border-slate-200/80 shadow-xs"
+                          }`}
                       >
                         {formatMessageText(msg.text)}
 
                         {isCallRelated && (
-                          <div className="mt-3 pt-2.5 border-t border-slate-100 flex flex-col gap-1.5">
-                            <a 
+                          <div className="mt-3 pt-2.5 border-t border-slate-150 flex flex-col gap-2">
+                            <a
                               href="tel:+917869918736"
-                              className="w-full flex items-center justify-center gap-2 bg-primary text-white hover:bg-primary/95 font-bold text-xs py-2 px-3 rounded-xl shadow-sm transition-colors"
+                              className="w-full flex items-center justify-center gap-2 bg-primary text-white hover:bg-primary/95 font-semibold text-xs py-2 px-3 rounded-xl shadow-xs transition-colors"
                             >
-                              <Phone className="w-3 h-3" /> Call +91 78699 18736
+                              <Phone className="w-3.5 h-3.5" /> Call +91 78699 18736
                             </a>
-                            <a 
+                            <a
                               href="https://wa.me/917869918736"
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="w-full flex items-center justify-center gap-2 bg-[#25D366] text-white hover:bg-[#20ba59] font-bold text-xs py-2 px-3 rounded-xl shadow-sm transition-colors"
+                              className="w-full flex items-center justify-center gap-2 bg-[#25D366] text-white hover:bg-[#20ba59] font-semibold text-xs py-2 px-3 rounded-xl shadow-xs transition-colors"
                             >
-                              <MessageCircle className="w-3 h-3" /> WhatsApp Us
+                              <MessageCircle className="w-3.5 h-3.5" /> WhatsApp Us
                             </a>
                           </div>
                         )}
@@ -459,17 +469,17 @@ export default function Chatbot() {
                   </div>
                 );
               })}
-              
+
               {/* Loader */}
               {isLoading && (
                 <div className="flex justify-start">
                   <div className="flex gap-2.5 max-w-[85%]">
-                    <div className="w-7 h-7 rounded-full bg-[#111111] border border-border flex items-center justify-center shrink-0 text-primary mt-1">
-                      <Bot className="w-3.5 h-3.5" />
+                    <div className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center shrink-0 mt-1">
+                      <Bot className="w-3.5 h-3.5 text-primary" />
                     </div>
-                    <div className="p-3 bg-white rounded-2xl rounded-tl-none border border-slate-200/50 flex items-center gap-2 text-slate-500 shadow-sm">
+                    <div className="p-3 bg-white rounded-2xl rounded-tl-xs border border-slate-200/80 flex items-center gap-2 text-slate-500 shadow-xs">
                       <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                      <span className="text-xs font-medium">Thinking...</span>
+                      <span className="text-xs font-medium">AeroBot is thinking...</span>
                     </div>
                   </div>
                 </div>
@@ -479,15 +489,15 @@ export default function Chatbot() {
 
             {/* Action Engine Buttons & Dynamic Suggestions */}
             {!isLoading && (
-              <div className="border-t border-slate-150 p-2 bg-white flex flex-col gap-2 shrink-0">
+              <div className="border-t border-slate-200/80 p-2.5 bg-white flex flex-col gap-2 shrink-0">
                 {/* suggested questions */}
                 {suggestions && suggestions.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 px-1 py-1 max-h-[85px] overflow-y-auto">
+                  <div className="flex flex-wrap gap-1.5 px-0.5 py-0.5 max-h-[85px] overflow-y-auto">
                     {suggestions.map((chip, idx) => (
                       <button
                         key={idx}
                         onClick={() => handleSend(chip.query || chip.text)}
-                        className="text-[10px] sm:text-[11px] font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-full px-2.5 py-1 hover:border-primary hover:text-primary transition-all active:scale-95 cursor-pointer shadow-sm"
+                        className="text-[11px] font-medium text-slate-700 bg-slate-100/80 border border-slate-200 rounded-full px-3 py-1 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all active:scale-95 cursor-pointer shadow-2xs"
                       >
                         {chip.text}
                       </button>
@@ -496,26 +506,26 @@ export default function Chatbot() {
                 )}
 
                 {/* Quick actions strip */}
-                <div className="flex items-center gap-2 border-t border-slate-100 pt-2 px-1 text-[11px]">
-                  <a 
-                    href="tel:+917869918736" 
-                    className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg border border-slate-200 transition-colors"
+                <div className="flex items-center gap-2 border-t border-slate-100 pt-2 px-0.5 text-[11px]">
+                  <a
+                    href="tel:+917869918736"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl border border-slate-200 transition-colors"
                   >
-                    <Phone className="w-3 h-3 text-primary" /> Call
+                    <Phone className="w-3.5 h-3.5 text-primary" /> Call Us
                   </a>
-                  <a 
-                    href="https://wa.me/917869918736" 
-                    target="_blank" 
+                  <a
+                    href="https://wa.me/917869918736"
+                    target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg border border-slate-200 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl border border-slate-200 transition-colors"
                   >
-                    <MessageCircle className="w-3 h-3 text-green-500" /> WhatsApp
+                    <MessageCircle className="w-3.5 h-3.5 text-emerald-600" /> WhatsApp
                   </a>
-                  <button 
-                    onClick={() => handleSend("Register / Apply for course")} 
-                    className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-primary text-white hover:bg-primary/95 font-bold rounded-lg transition-colors cursor-pointer"
+                  <button
+                    onClick={() => handleSend("Register / Apply for course")}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-primary text-white hover:bg-primary/95 font-semibold rounded-xl transition-colors cursor-pointer shadow-xs"
                   >
-                    <Sparkles className="w-3 h-3" /> Apply Now
+                    <Sparkles className="w-3.5 h-3.5" /> Apply
                   </button>
                 </div>
               </div>
@@ -534,14 +544,14 @@ export default function Chatbot() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyPress}
-                placeholder="Ask your enquiry here..."
+                placeholder="Ask AeroBot your enquiry..."
                 disabled={isLoading}
-                className="flex-1 bg-[#F5F5F5] border border-slate-200 rounded-xl px-4 py-2.5 text-xs sm:text-sm focus:outline-none focus:border-primary text-slate-800 disabled:opacity-50"
+                className="flex-1 bg-slate-100/80 border border-slate-200 rounded-full px-4 py-2.5 text-xs sm:text-sm focus:outline-none focus:border-primary focus:bg-white text-slate-800 disabled:opacity-50 transition-colors"
               />
               <Button
                 type="submit"
                 disabled={isLoading || !input.trim()}
-                className="h-10 w-10 p-0 rounded-xl flex items-center justify-center shrink-0"
+                className="h-10 w-10 p-0 rounded-full bg-primary hover:bg-primary/90 text-white flex items-center justify-center shrink-0 shadow-md shadow-primary/20 border-none"
               >
                 <Send className="w-4 h-4" />
               </Button>
@@ -550,12 +560,93 @@ export default function Chatbot() {
         )}
       </AnimatePresence>
 
+      {/* ── Avatar Pop-up Speech Bubble (Appears when closed) ── */}
+      <AnimatePresence>
+        {!isOpen && showPopup && (
+          <motion.div
+            initial={{ opacity: 0, y: 15, scale: 0.92 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.92 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            onClick={() => {
+              setIsOpen(true);
+              setShowPopup(false);
+            }}
+            className="mb-3 max-w-[280px] sm:max-w-[320px] bg-slate-950/95 backdrop-blur-xl border border-slate-800 text-white rounded-2xl shadow-2xl p-3.5 relative flex flex-col gap-2.5 cursor-pointer group hover:border-slate-700 transition-all"
+          >
+            {/* Pointer arrow to FAB */}
+            <div className="absolute -bottom-1.5 right-6 w-3.5 h-3.5 bg-slate-950/95 border-b border-r border-slate-800 rotate-45" />
+
+            {/* Header with Avatar badge and Close button */}
+            <div className="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-2">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary relative shrink-0">
+                  <Bot className="w-4 h-4 text-primary" />
+                  <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-slate-950 rounded-full" />
+                </div>
+                <div>
+                  <h5 className="font-semibold text-xs text-white tracking-tight flex items-center gap-1">
+                    AeroBot
+                    <Sparkles className="w-3 h-3 text-amber-400" />
+                  </h5>
+                  {/* <span className="text-[9px] text-emerald-400 font-medium uppercase tracking-wider block font-mono">AI Drone Copilot</span>ch */}
+                </div>
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowPopup(false);
+                }}
+                className="text-slate-400 hover:text-white p-1 rounded-full hover:bg-slate-800 transition-colors"
+                title="Close greeting"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Speech Greeting Text */}
+            <p className="text-xs text-slate-200 leading-relaxed font-normal">
+              👋 <strong>Hi! I am AeroBot!</strong> How can I help you today?
+            </p>
+
+            {/* Quick Action Chips inside Popup */}
+            <div className="flex flex-wrap gap-1.5 pt-0.5">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsOpen(true);
+                  setShowPopup(false);
+                  handleSend("What are the drone training course details and fees?");
+                }}
+                className="text-[11px] font-medium bg-primary hover:bg-primary/90 text-white rounded-full px-3 py-1 transition-all shadow-sm active:scale-95"
+              >
+                Courses & Fees 🎓
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsOpen(true);
+                  setShowPopup(false);
+                  handleSend("Call now");
+                }}
+                className="text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-full px-3 py-1 transition-all shadow-sm active:scale-95"
+              >
+                Contact Us 📞
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* ── Floating Action Button ──────────────── */}
       <motion.button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          setIsOpen(!isOpen);
+          setShowPopup(false);
+        }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="h-14 w-14 rounded-full bg-primary hover:bg-primary/95 text-white flex items-center justify-center shadow-2xl relative cursor-pointer border border-primary/20"
+        className="h-14 w-14 rounded-full bg-primary hover:bg-primary/95 text-white flex items-center justify-center shadow-xl shadow-primary/30 border border-white/20 cursor-pointer relative z-10 transition-all"
       >
         <AnimatePresence mode="wait">
           {isOpen ? (
@@ -578,9 +669,9 @@ export default function Chatbot() {
               className="relative flex items-center justify-center"
             >
               <MessageSquare className="w-6 h-6" />
-              <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#111111]/30 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-yellow-400 border-2 border-primary"></span>
+              <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-400 border-2 border-primary"></span>
               </span>
             </motion.div>
           )}
